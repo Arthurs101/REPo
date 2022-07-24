@@ -11,89 +11,22 @@ data class ItemData(
 // -----------------------
 
 fun main() {
-    val result = processList((listOf(10, "Enero", null, true)))
+    val result = processList((listOf(5, "Enero", null, true)))
     println(result)
 
 }
 fun processList(inputList: List<Any?>?): List<ItemData>? {
-    if (inputList == null) { //si es null devolver null
-        return null
-    } else {//revisar cada objeto y actuar según caso
-        var result = ArrayList<ItemData>()
-        for ((index, element) in inputList.withIndex()) {
-            when (element) {
-                is Int -> {
-                    result.add(
-                        ItemData(
-                            originalPos = index,
-                            originalValue = element,
-                            type = "entero",
-                            info = IntegerType(element)
-                        )
-                    )
-                }
-                is String -> {
-                    result.add(
-                        ItemData(
-                            originalPos = index,
-                            originalValue =  element,
-                            type = "cadena",
-                            info = StringType(element)
-                        )
-                    )
-                }
-                is Boolean -> {
-                    result.add(
-                        ItemData(
-                            originalPos = index,
-                            originalValue = element,
-                            type = "booleano",
-                            info = Booleantype(element)
-                        )
-                    )
-                }
-                else ->{
-                    if (element !=null){
-                        result.add(
-                            ItemData(
-                                originalPos = index,
-                                originalValue = element,
-                                type = null,
-                                info = null
-                            )
-                        )
-
-                    }
-                }
-
+    val result = inputList?.let {  //en caso de que sea un null, da un null de resultado
+        var ArrayofItems = ArrayList<ItemData>()
+        it.forEachIndexed{ inx, element -> //recorrer elementos del arreglo, y crear el objeto según sea el caso
+            when(element){
+                is Int -> {ArrayofItems.add(ItemData(inx,element,"entero", listOf(10,5,2).firstOrNull { (element % it) == 0 }?.let{"m$it"}))}
+                is Boolean -> {ArrayofItems.add(ItemData(inx,element,"booleano",if(element){"verdadero"} else{"falso"}))}
+                is String -> {ArrayofItems.add(ItemData(inx,element,"cadena","l${element.length}"))}
+                else -> element?.let { ArrayofItems.add(ItemData(inx,element))}
             }
         }
-        return result
-
+        return ArrayofItems
     }
-}
-//Info for Int tyes
-fun IntegerType(valux: Int): String? {
-    //covertir de any? a entero
-    var type: String? = ""
-    if((valux%10) == 0){
-        type = "m10"
-    }else if((valux%5) == 0){
-        type = "m5"
-    }else if ((valux%2) == 0){
-        type = "m2"
-    }else{
-        type = null;
-    }
-    return type
-}
-//largo del array
-fun StringType(valux: String): String? {
-    return "l" + valux.length
-}
-//formato del boolean en strings
-fun Booleantype(valux: Boolean): String?{
-    if(valux){
-        return "verdadero"
-    }else return "falso"
+    return  result
 }
